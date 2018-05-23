@@ -1,0 +1,5 @@
+{
+    "webAPI": "1234567",
+    "countryId": 1,
+    "outputDir": "/var/www/rss"
+}

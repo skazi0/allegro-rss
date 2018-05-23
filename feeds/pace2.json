@@ -1,0 +1,7 @@
+{
+    "name": "pace2",
+    "query": {
+        "search": "&quot;pace&quot; (lutow* kolb*)",
+        "price": { "max": 300 }
+    }
+}
