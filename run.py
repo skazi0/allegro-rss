@@ -66,11 +66,13 @@ def make_rss(name, query):
 
     res = client.service.doGetItemsList(webAPI, countryId, filter_query, resultScope=3)
 
-    if res.itemsCount <= 0:
-        return
-
     feed = feedgenerator.Rss201rev2Feed(title='Allegro - %s' % query['search'], link='http://allegro.pl', description=name, language='pl')
-    for item in res.itemsList.item:
+
+    items = []
+    if res.itemsCount > 0:
+        items = res.itemsList.item
+
+    for item in items:
         feed.add_item(
             title=item.itemTitle,
             link="https://allegro.pl/show_item.php?item=%s" % item.itemId,
