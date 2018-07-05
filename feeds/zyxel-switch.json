@@ -1,6 +1,7 @@
 {
     "name": "zyxel-switch",
     "query": {
-        "search": "(gs2210-24 gs2210-48 gs1900-24 gs1900-48)"
+        "search_old": "(gs2210-24 gs2210-48 gs1900-24 gs1900-48)",
+        "search": "(gs2210-24 gs2210-48)"
     }
 }
