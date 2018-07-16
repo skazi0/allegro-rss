@@ -1,5 +1,8 @@
 {
     "webAPI": "1234567",
+    "restID": "abcdef12345",
+    "restSecret": "asdsdfgdgfjfgjghj",
+    "restRedirectURI": "http://localhost:8000",
     "countryId": 1,
     "outputDir": "/var/www/rss"
 }
