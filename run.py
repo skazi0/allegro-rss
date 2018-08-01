@@ -109,7 +109,7 @@ def make_date_line(item):
 
 def make_image_line(item):
     for img in item['images']:
-         return "<img style='width:200px' src='%s'/>" % img['url']
+         return "<img height='200' src='%s'/>" % img['url']
     return ''
 
 def make_rss(name, query, scope):
