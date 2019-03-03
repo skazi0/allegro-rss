@@ -6,10 +6,16 @@ import time
 import json
 import feedgenerator
 import requests
+import traceback
 from urlparse import urlparse, parse_qs
+import logging
 
 url = 'https://api.allegro.pl/offers/listing'
 auth_url = 'https://allegro.pl/auth/oauth'
+
+logging.basicConfig()
+logger = logging.getLogger()
+#logger.setLevel(logging.DEBUG)
 
 scriptdir = os.path.dirname(os.path.realpath(__file__))
 authfile = os.path.join(scriptdir, 'auth.json')
@@ -112,6 +118,13 @@ def make_image_line(item):
          return "<img height='200' src='%s'/>" % img['url']
     return ''
 
+def category_filters(main_filter_query):
+    cfilter_query = main_filter_query.copy()
+    cfilter_query['include'] = ['-all', 'filters']
+    cfilters = session.get(url, params=cfilter_query).json()['filters']
+
+    return { f['name']: { 'id': f['id'], 'values': { v['name']: v.get('value') for v in f['values'] } } for f in cfilters }
+
 def make_rss(name, query, scope):
     filter_query={'fallback': False}
     for k,v in query.iteritems():
@@ -128,12 +141,29 @@ def make_rss(name, query, scope):
     if scope=='descriptions':
         filter_query['searchMode'] = 'DESCRIPTIONS'
 
+    # fetch category specific filters and translate names to IDs
+    if 'category-filters' in query:
+        cfilters = category_filters(filter_query)
+        for k,v in query['category-filters'].iteritems():
+            if k not in cfilters:
+                continue
+            if not isinstance(v, list):
+                v = [v]
+            filter_query[cfilters[k]['id']] = [ cfilters[k]['values'].get(vv) for vv in v ]
+
     res = session.get(url, params=filter_query)
     data = res.json()
 
     feed = feedgenerator.Rss201rev2Feed(title='Allegro - %s' % query.get('search', name), link='http://allegro.pl', description=name, language='pl')
 
-    items = data['items']['regular']
+    try:
+        items = data['items']['regular']
+    except:
+        print '-'*60
+        traceback.print_exc()
+        print data
+        print '-'*60
+        return
 
     for item in items:
         feed.add_item(
