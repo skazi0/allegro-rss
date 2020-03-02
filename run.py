@@ -118,6 +118,12 @@ def make_image_line(item):
          return "<img height='200' src='%s'/>" % img['url']
     return ''
 
+def make_url(item):
+    vendor = item.get('vendor')
+    if vendor:
+        return vendor['url']
+    return "https://allegro.pl/show_item.php?item=%s" % item['id']
+
 def category_filters(main_filter_query):
     cfilter_query = main_filter_query.copy()
     cfilter_query['include'] = ['-all', 'filters']
@@ -168,7 +174,7 @@ def make_rss(name, query, scope):
     for item in items:
         feed.add_item(
             title=item['name'],
-            link="https://allegro.pl/show_item.php?item=%s" % item['id'],
+            link=make_url(item),
             description=u"Sprzedający: <a href='https://allegro.pl/show_user.php?uid=%s'>%s</a><br/>%s<br/>Do końca: %s<br/>%s" % (
                 item['seller']['id'], item['seller']['id'],
                 make_price_line(item),
